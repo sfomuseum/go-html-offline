@@ -18,6 +18,7 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+	"time"
 )
 
 type ServiceWorkerOptions struct {
@@ -120,10 +121,12 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 	type ServiceWorkerVars struct {
 		CacheName string
 		ToCache   []string
+		Date      string
 	}
 
 	type ServiceWorkerInitVars struct {
 		ServiceWorkerURL string
+		Date             string
 	}
 
 	to_cache := []string{
@@ -156,8 +159,11 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 					}
 				}
 
+				now := time.Now()
+
 				vars := ServiceWorkerInitVars{
 					ServiceWorkerURL: opts.ServiceWorkerURL,
+					Date:             now.Format(time.RFC3339),
 				}
 
 				var buf bytes.Buffer
@@ -261,9 +267,12 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 		}
 	}
 
+	now := time.Now()
+
 	vars := ServiceWorkerVars{
 		CacheName: opts.CacheName,
 		ToCache:   to_cache,
+		Date:      now.Format(time.RFC3339),
 	}
 
 	err = sw_t.Execute(serviceworker_wr, vars)
