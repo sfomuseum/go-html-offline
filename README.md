@@ -131,6 +131,8 @@ $> ls -al /path/to/index.html
 /path/to/sw.js
 ```
 
+If you just want to bulk process one or more folders full of `.html` files you would invoke `add-service-worker` with the `-mode directory` flag.
+
 ## See also
 
 * https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
