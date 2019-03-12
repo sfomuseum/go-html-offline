@@ -36,17 +36,16 @@ import (
 html_path := "/path/to/index.html"
 
 html_in, _ := os.Open(html_path)
-html_out := os.Stdout
-sw_out := os.Stdout
+html_out := os.Stdout			// update to point to service worker javascript
+sw_out := os.Stdout			// the actual service worker javascript
 
 opts := offline.DefaultServiceWorkerOptions()
-
 offline.AddServiceWorker(html_in, html_out, sw_out, opts)
 ```
 
 _Note that error handling has been removed for the sake of brevity._
 
-The `AddServiceWorker` methods will update the HTML markup, reading from the `html_in` `io.Reader` and writing to the `html_out` `io.Writer` interfaces, to include the following JavaScript content:
+The `AddServiceWorker` methods will update the HTML markup, reading from the `html_in` and writing to the `html_out` interfaces, to include the following JavaScript content:
 
 ```
 <script type="text/javascript" x-service-worker="true">
