@@ -154,7 +154,7 @@ If you just want to bulk process one or more folders full of `.html` files you w
 
 URIs (to be passed to the `cache.addAll` JavaScript function) are derived from the following HTML elements:
 
-* `<img src="{URI}" />
+* `&lt;img src="{URI}" /&gt;
 * `<link rel="stylesheet" href="{URI}" />
 * `<script type="text/javscript" src="{URI}" />
 * `<source srcset="{URI}" />
