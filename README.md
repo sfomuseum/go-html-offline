@@ -150,6 +150,16 @@ $> ls -al /path/to/index.html
 
 If you just want to bulk process one or more folders full of `.html` files you would invoke `add-service-worker` with the `-mode directory` flag.
 
+## URIs
+
+URIs (to be passed to the `cache.addAll` JavaScript function) are derived from the following HTML elements:
+
+* `<img src="{URI}" />
+* `<link rel="stylesheet" href="{URI}" />
+* `<script type="text/javscript" src="{URI}" />
+* `<source srcset="{URI}" />
+* `<source src="{URI}" />
+
 ## See also
 
 * https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
