@@ -17,7 +17,7 @@ build:	fmt bin
 
 deps:   
 	@GOPATH=$(GOPATH) go get -u "github.com/facebookgo/atomicfile"
-	# @GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-crawl"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/walk"
 	@GOPATH=$(GOPATH) go get -u "golang.org/x/net/html"
 
 vendor-deps: rmdeps deps

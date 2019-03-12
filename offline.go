@@ -9,10 +9,13 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"github.com/facebookgo/atomicfile"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 	"io"
 	_ "log"
+	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -30,6 +33,68 @@ func DefaultServiceWorkerOptions() *ServiceWorkerOptions {
 	}
 
 	return &opts
+}
+
+func AddServiceWorkerToFile(path string, opts *ServiceWorkerOptions) error {
+
+	html_path, err := filepath.Abs(path)
+
+	if err != nil {
+		return err
+	}
+
+	in, err := os.Open(html_path)
+
+	if err != nil {
+		return err
+	}
+
+	root := filepath.Dir(html_path)
+	sw_path := filepath.Join(root, opts.ServiceWorkerURL)
+
+	html_out, err := atomicfile.New(html_path, 0644)
+
+	if err != nil {
+		return err
+	}
+
+	sw_out, err := atomicfile.New(sw_path, 0644)
+
+	if err != nil {
+		html_out.Abort()
+		return err
+	}
+
+	err = AddServiceWorker(in, html_out, sw_out, opts)
+
+	if err != nil {
+		html_out.Abort()
+		sw_out.Abort()
+		return err
+	}
+
+	err = in.Close()
+
+	if err != nil {
+		html_out.Abort()
+		sw_out.Abort()
+		return err
+	}
+
+	err = html_out.Close()
+
+	if err != nil {
+		sw_out.Abort()
+		return err
+	}
+
+	err = sw_out.Close()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Writer, opts *ServiceWorkerOptions) error {

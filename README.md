@@ -116,6 +116,8 @@ Add server worker JavaScript handlers for one or more HTML files.
 Usage of ./bin/add-service-worker:
   -cache-name string
     	The name for your browser/service worker cache. (default "network-or-cache")
+  -mode string
+    	Indicate how command line arguments should be interpreted. Valid options are: files, directory. (default "file")
   -server-worker-url string
     	The URI of the JavaScript service worker. (default "sw.js")
 ```

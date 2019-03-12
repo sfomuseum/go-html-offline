@@ -48,7 +48,6 @@ function fromCache(request) {
       if (! matching){
 	return Promise.reject('no-match');
       }
-      console.log("cache hit");
       return matching;
     });
   });
