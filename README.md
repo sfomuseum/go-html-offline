@@ -156,7 +156,7 @@ URIs (to be passed to the `cache.addAll` JavaScript function) are derived from t
 
 * &lt;img src="{URI}" /&gt;
 * &lt;link rel="stylesheet" href="{URI}" /&gt;
-* &lt;script type="text/javscript" src="{URI}" /&gt;
+* &lt;script type="text/javascript" src="{URI}" /&gt;
 * &lt;source srcset="{URI}" /&gt;
 * &lt;source src="{URI}" /&gt;
 
