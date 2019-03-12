@@ -1,0 +1,8 @@
+*~
+pkg
+src
+!vendor/src
+*.json
+bin
+*.db
+dist
