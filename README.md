@@ -17,6 +17,19 @@ All of this package's dependencies are bundled with the code in the `vendor` dir
 ```
 import (
 	"github.com/sfomuseum/go-html-offline"
+)
+
+html_path := "/path/to/index.html"
+
+opts := offline.DefaultServiceWorkerOptions()
+offline.AddServiceWorkerToFile(html_path, opts)
+```
+
+The `AddServiceWorkerToFile` method is a helper method, working with atomic files, around the more abstract `AddServiceWorker` method that assumes `io.Reader` and `io.Writer` interfaces:
+
+```
+import (
+	"github.com/sfomuseum/go-html-offline"
 	"os"
 )
 
