@@ -40,6 +40,7 @@ fmt:
 bin: 	rmdeps self
 	rm -rf bin/*
 	@GOPATH=$(shell pwd) go build -o bin/add-service-worker cmd/add-service-worker.go
+	@GOPATH=$(shell pwd) go build -o bin/list-cache-items cmd/list-cache-items.go
 	@GOPATH=$(shell pwd) go build -o bin/service-worker-inventoryd cmd/service-worker-inventoryd.go
 
 lambda:

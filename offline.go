@@ -15,6 +15,7 @@ import (
 	"io"
 	"io/ioutil"
 	_ "log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -230,7 +231,33 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 	return html.Render(html_wr, doc)
 }
 
-func CacheListFromReader(fh io.Reader, opts *ServiceWorkerOptions) ([]string, error){
+func CacheListFromFile(path string, opts *ServiceWorkerOptions) ([]string, error) {
+
+	fh, err := os.Open(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer fh.Close()
+
+	return CacheListFromReader(fh, opts)
+}
+
+func CacheListFromURL(url string, opts *ServiceWorkerOptions) ([]string, error) {
+
+	rsp, err := http.Get(url)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rsp.Body.Close()
+
+	return CacheListFromReader(rsp.Body, opts)
+}
+
+func CacheListFromReader(fh io.Reader, opts *ServiceWorkerOptions) ([]string, error) {
 
 	doc, err := html.Parse(fh)
 
