@@ -240,6 +240,66 @@ URIs (to be passed to the `cache.addAll` JavaScript function) are derived from t
 * &lt;source srcset="{URI}" /&gt;
 * &lt;source src="{URI}" /&gt;
 
+## AWS (Lambda)
+
+Yes, it is possible to run the `service-worker-inventoryd` daemon as Lambda function and accessed via an API Gateway endpoint.
+
+The first step is to build the Lambda function to upload to AWS. This can be done using the handy `make lambda` Makefile target.
+
+```
+$> cd go-html-offline
+$> make lambda
+if test -d pkg; then rm -rf pkg; fi
+if test -s src; then rm -rf src; fi
+mkdir -p src/github.com/sfomuseum/go-html-offline
+cp *.go src/github.com/sfomuseum/go-html-offline/
+cp -r http src/github.com/sfomuseum/go-html-offline/
+cp -r server src/github.com/sfomuseum/go-html-offline/
+cp -r vendor/* src/
+if test -f main; then rm -f main; fi
+if test -f deployment.zip; then rm -f deployment.zip; fi
+zip deployment.zip main
+  adding: main (deflated 51%)
+rm -f main
+```
+
+Now, upload `deployment.zip` to AWS. Your Lambda function (let's just say it's called `ServiceWorkerJS`) will need to be configured as follows:
+
+* The runtime is `Go 1.x`
+* The handler name is `main`
+* Your functions executes as role with minimum `AWSLambdaExecute` permissions
+
+You will need to set the following environment variables:
+
+| Key | Value |
+| --- | --- |
+| INVENTORYD_SCHEME | lambda |
+| INVENTORYD_ROOT | https://THE-HOST-YOU-WANT-GENERATE-SERVICE-WORKER-JS-FILES-FOR |
+
+To configure the API Gateway endpoint to invoke your Lambda function, head over to the API Gateway console and:
+
+* Create a new resource
+* In the `resource path` enter `{+proxy}` (name it whatever you want) - or just check the `Configure as proxy resource` button.
+* Check the `Enable API Gateway CORS` button.
+* Adjust the resource methods as necessary, in this case adding a `GET` method pointing to the `ServiceWorkerJS` lambda function.
+* Remove the `ANY` and the `OPTIONS` methods.
+* Deploy the API (with a new stage called `sw` or whatever you want).
+
+Then you should be able to do something like this:
+
+```
+$> curl -s -v https://{ENDPOINT}.execute-api.{REGION}.amazonaws.com/sw/PATH-YOU-WANT-GENERATE-SERVICE-WORKER-JS-FILE-FOR > /dev/null
+
+< HTTP/2 200 
+< date: Wed, 13 Mar 2019 19:11:51 GMT
+< content-type: text/javascript
+< content-length: 3249
+< x-amzn-requestid: db5105a7-45c3-11e9-9b01-01c7c06f5b41
+< x-amzn-remapped-content-length: 3249
+< x-amz-apigw-id: {GATEWAY_ID}
+< x-amzn-trace-id: Root=1-5c8955f7-4b9b0280fecda0c0a0eeccc0;Sampled=0
+```
+
 ## See also
 
 * https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
