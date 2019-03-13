@@ -154,6 +154,8 @@ If you just want to bulk process one or more folders full of `.html` files you w
 
 `service-worker-inventoryd` is an HTTP server that will fetch a URL and generate a "network-or-cache" style service worker JavaScript file for the assets listed in that page (URL) using the `offline.AddServiceWorker` method.
 
+The server does not provide any access controls so if that's important to you then you will need to run this server behind something that does.
+
 ```
 ./bin/service-worker-inventoryd -h
 Usage of ./bin/service-worker-inventoryd:
