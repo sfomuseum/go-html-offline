@@ -8,6 +8,7 @@ self:   prep
 	if test -s src; then rm -rf src; fi
 	mkdir -p src/github.com/sfomuseum/go-html-offline
 	cp *.go src/github.com/sfomuseum/go-html-offline/
+	cp -r http src/github.com/sfomuseum/go-html-offline/
 	cp -r vendor/* src/
 
 rmdeps:
@@ -29,11 +30,13 @@ vendor-deps: rmdeps deps
 
 fmt:
 	go fmt cmd/*.go
+	go fmt http/*.go
 	go fmt *.go
 
 bin: 	rmdeps self
 	rm -rf bin/*
 	@GOPATH=$(shell pwd) go build -o bin/add-service-worker cmd/add-service-worker.go
+	@GOPATH=$(shell pwd) go build -o bin/inventoryd cmd/inventoryd.go
 
 dist-build:
 	OS=darwin make dist-os
