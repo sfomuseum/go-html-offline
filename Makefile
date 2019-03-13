@@ -9,6 +9,7 @@ self:   prep
 	mkdir -p src/github.com/sfomuseum/go-html-offline
 	cp *.go src/github.com/sfomuseum/go-html-offline/
 	cp -r http src/github.com/sfomuseum/go-html-offline/
+	cp -r server src/github.com/sfomuseum/go-html-offline/
 	cp -r vendor/* src/
 
 rmdeps:
@@ -19,6 +20,7 @@ build:	fmt bin
 deps:   
 	@GOPATH=$(GOPATH) go get -u "github.com/facebookgo/atomicfile"
 	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/walk"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/algnhsa"
 	@GOPATH=$(GOPATH) go get -u "golang.org/x/net/html"
 
 vendor-deps: rmdeps deps
@@ -31,6 +33,7 @@ vendor-deps: rmdeps deps
 fmt:
 	go fmt cmd/*.go
 	go fmt http/*.go
+	go fmt server/*.go
 	go fmt *.go
 
 bin: 	rmdeps self
