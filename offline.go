@@ -262,7 +262,7 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 
 	for idx, uri := range to_cache {
 
-		if !strings.HasPrefix(uri, "/") {
+		if !strings.HasPrefix(uri, "/") && !strings.HasPrefix(uri, "http") {
 			to_cache[idx] = fmt.Sprintf("./%s", uri)
 		}
 	}
