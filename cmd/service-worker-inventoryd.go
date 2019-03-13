@@ -6,7 +6,7 @@ import (
 	"github.com/sfomuseum/go-html-offline"
 	"github.com/sfomuseum/go-html-offline/http"
 	"github.com/sfomuseum/go-html-offline/server"
-	"github.com/whosonfirst/go-whosonfirst-cli/flags"	
+	"github.com/whosonfirst/go-whosonfirst-cli/flags"
 	"log"
 	gohttp "net/http"
 	gourl "net/url"
@@ -24,6 +24,9 @@ func main() {
 	var cors = flag.String("cors", "", "Set the following CORS access-control header.")
 	var logging = flag.Bool("logging", false, "Log requests (to STDOUT).")
 
+	var urls flags.MultiString
+	flag.Var(&urls, "url", "One or more URLs to append to the service worker cache list")
+
 	flag.Parse()
 
 	err := flags.SetFlagsFromEnvVars("INVENTORYD")
@@ -31,7 +34,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	if *root == "" {
 		log.Fatal("Missing root")
 	}
@@ -48,6 +51,20 @@ func main() {
 
 	sw_opts := offline.DefaultServiceWorkerOptions()
 	sw_opts.CacheName = *cache_name
+
+	if len(urls) > 0 {
+
+		// the extra loop is to account for the fact that we might be using
+		// in a Lambda context and we are reading flags from environment
+		// variables (20190313/thisisaaronland)
+
+		for _, str_u := range urls {
+
+			for _, u := range strings.Split(str_u, ",") {
+				sw_opts.CacheURLs = append(sw_opts.CacheURLs, u)
+			}
+		}
+	}
 
 	inv_opts := http.InventoryOptions{
 		Root:    *root,

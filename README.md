@@ -147,6 +147,8 @@ Usage of ./bin/add-service-worker:
     	Indicate how command line arguments should be interpreted. Valid options are: files, directory. (default "file")
   -server-worker-url string
     	The URI of the JavaScript service worker. (default "sw.js")
+  -url value
+    	One or more URLs to append to the service worker cache list
 ```
 
 For example:
@@ -187,6 +189,8 @@ Usage of ./bin/service-worker-inventoryd:
     	A valid URL to fetch subrequests from.
   -scheme string
     	Valid options are: http, lambda. (default "http")
+  -url value
+    	One or more URLs to append to the service worker cache list	
 ```
 
 For example:
@@ -275,6 +279,11 @@ You will need to set the following environment variables:
 | --- | --- |
 | INVENTORYD_SCHEME | lambda |
 | INVENTORYD_ROOT | https://THE-HOST-YOU-WANT-GENERATE-SERVICE-WORKER-JS-FILES-FOR |
+
+Any of the command line parameters can be passed to the Lambda function by setting environment variables as follows:
+
+* Upper case the flag name and replace all spaces with the `_` character
+* Prefix the environment variable with `INVENTORYD_`
 
 To configure the API Gateway endpoint to invoke your Lambda function, head over to the API Gateway console and:
 

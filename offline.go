@@ -23,6 +23,7 @@ import (
 
 type ServiceWorkerOptions struct {
 	CacheName        string
+	CacheURLs        []string
 	ServiceWorkerURL string
 }
 
@@ -30,6 +31,7 @@ func DefaultServiceWorkerOptions() *ServiceWorkerOptions {
 
 	opts := ServiceWorkerOptions{
 		CacheName:        "network-or-cache",
+		CacheURLs:        []string{},
 		ServiceWorkerURL: "sw.js",
 	}
 
@@ -131,7 +133,10 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 
 	to_cache := []string{
 		"",
-		"index.html",
+	}
+
+	for _, u := range opts.CacheURLs {
+		to_cache = append(to_cache, u)
 	}
 
 	var callback func(node *html.Node, writer io.Writer)

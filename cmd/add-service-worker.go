@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/sfomuseum/go-html-offline"
+	"github.com/whosonfirst/go-whosonfirst-cli/flags"
 	"github.com/whosonfirst/walk"
 	"log"
 	"os"
@@ -15,10 +16,14 @@ func main() {
 	sw_url := flag.String("server-worker-url", "sw.js", "The URI of the JavaScript service worker.")
 	mode := flag.String("mode", "file", "Indicate how command line arguments should be interpreted. Valid options are: files, directory.")
 
+	var urls flags.MultiString
+	flag.Var(&urls, "url", "One or more URLs to append to the service worker cache list")
+
 	flag.Parse()
 
 	opts := offline.DefaultServiceWorkerOptions()
 	opts.CacheName = *cache_name
+	opts.CacheURLs = urls
 	opts.ServiceWorkerURL = *sw_url
 
 	switch *mode {
