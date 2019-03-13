@@ -13,6 +13,7 @@ import (
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 	"io"
+	"io/ioutil"
 	_ "log"
 	"os"
 	"path/filepath"
@@ -20,6 +21,17 @@ import (
 	"text/template"
 	"time"
 )
+
+type ServiceWorkerVars struct {
+	CacheName string
+	ToCache   []string
+	Date      string
+}
+
+type ServiceWorkerInitVars struct {
+	ServiceWorkerURL string
+	Date             string
+}
 
 type ServiceWorkerOptions struct {
 	CacheName        string
@@ -120,23 +132,10 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 		return err
 	}
 
-	type ServiceWorkerVars struct {
-		CacheName string
-		ToCache   []string
-		Date      string
-	}
+	to_cache, err := CacheList(doc, opts)
 
-	type ServiceWorkerInitVars struct {
-		ServiceWorkerURL string
-		Date             string
-	}
-
-	to_cache := []string{
-		"",
-	}
-
-	for _, u := range opts.CacheURLs {
-		to_cache = append(to_cache, u)
+	if err != nil {
+		return err
 	}
 
 	var callback func(node *html.Node, writer io.Writer)
@@ -201,6 +200,66 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 
 				script.AppendChild(&body)
 				n.AppendChild(&script)
+			default:
+				// pass
+			}
+		}
+
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			callback(c, html_wr)
+		}
+
+	}
+
+	callback(doc, html_wr)
+
+	now := time.Now()
+
+	vars := ServiceWorkerVars{
+		CacheName: opts.CacheName,
+		ToCache:   to_cache,
+		Date:      now.Format(time.RFC3339),
+	}
+
+	err = sw_t.Execute(serviceworker_wr, vars)
+
+	if err != nil {
+		return err
+	}
+
+	return html.Render(html_wr, doc)
+}
+
+func CacheListFromReader(fh io.Reader, opts *ServiceWorkerOptions) ([]string, error){
+
+	doc, err := html.Parse(fh)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return CacheList(doc, opts)
+}
+
+func CacheList(doc *html.Node, opts *ServiceWorkerOptions) ([]string, error) {
+
+	to_cache := []string{
+		"",
+	}
+
+	for _, u := range opts.CacheURLs {
+		to_cache = append(to_cache, u)
+	}
+
+	out := ioutil.Discard
+
+	var callback func(node *html.Node, writer io.Writer)
+
+	callback = func(n *html.Node, w io.Writer) {
+
+		if n.Type == html.ElementNode {
+
+			switch n.Data {
 
 			case "img":
 
@@ -259,11 +318,11 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 		}
 
 		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			callback(c, html_wr)
+			callback(c, out)
 		}
 	}
 
-	callback(doc, html_wr)
+	callback(doc, out)
 
 	for idx, uri := range to_cache {
 
@@ -272,21 +331,7 @@ func AddServiceWorker(in io.Reader, html_wr io.Writer, serviceworker_wr io.Write
 		}
 	}
 
-	now := time.Now()
-
-	vars := ServiceWorkerVars{
-		CacheName: opts.CacheName,
-		ToCache:   to_cache,
-		Date:      now.Format(time.RFC3339),
-	}
-
-	err = sw_t.Execute(serviceworker_wr, vars)
-
-	if err != nil {
-		return err
-	}
-
-	return html.Render(html_wr, doc)
+	return to_cache, nil
 }
 
 func attrs2map(attrs ...html.Attribute) map[string]string {
