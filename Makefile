@@ -36,7 +36,7 @@ fmt:
 bin: 	rmdeps self
 	rm -rf bin/*
 	@GOPATH=$(shell pwd) go build -o bin/add-service-worker cmd/add-service-worker.go
-	@GOPATH=$(shell pwd) go build -o bin/inventoryd cmd/inventoryd.go
+	@GOPATH=$(shell pwd) go build -o bin/service-worker-inventoryd cmd/service-worker-inventoryd.go
 
 dist-build:
 	OS=darwin make dist-os

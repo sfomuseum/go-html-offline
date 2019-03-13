@@ -12,10 +12,10 @@ import (
 func main() {
 
 	cache_name := flag.String("cache-name", "network-or-cache", "The name for your browser/service worker cache.")
-	var host = flag.String("host", "localhost", "The hostname to listen for requests on")
-	var port = flag.Int("port", 8080, "The port number to listen for requests on")
-	var root = flag.String("root", "", "A valid URL")
-	var prefix = flag.String("prefix", "", "...")
+	var host = flag.String("host", "localhost", "The hostname to listen for requests on.")
+	var port = flag.Int("port", 8080, "The port number to listen for requests on.")
+	var root = flag.String("root", "", "A valid URL to fetch subrequests from.")
+	var prefix = flag.String("prefix", "", "A prefix to remove from URLs before fetching subrequests.")
 
 	flag.Parse()
 
