@@ -6,6 +6,7 @@ import (
 	"github.com/sfomuseum/go-html-offline"
 	"github.com/sfomuseum/go-html-offline/http"
 	"github.com/sfomuseum/go-html-offline/server"
+	"github.com/whosonfirst/go-whosonfirst-cli/flags"	
 	"log"
 	gohttp "net/http"
 	gourl "net/url"
@@ -25,11 +26,17 @@ func main() {
 
 	flag.Parse()
 
+	err := flags.SetFlagsFromEnvVars("INVENTORYD")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	
 	if *root == "" {
 		log.Fatal("Missing root")
 	}
 
-	_, err := gourl.Parse(*root)
+	_, err = gourl.Parse(*root)
 
 	if err != nil {
 		log.Fatal(err)
