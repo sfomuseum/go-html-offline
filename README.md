@@ -162,9 +162,11 @@ Usage of ./bin/service-worker-inventoryd:
   -cache-name string
     	The name for your browser/service worker cache. (default "network-or-cache")
   -cors string
-    	... (default "*")
+    	Set the following CORS access-control header.
   -host string
     	The hostname to listen for requests on. (default "localhost")
+  -httptest.serve string
+    	if non-empty, httptest.NewServer serves on this address and blocks
   -logging
     	Log requests (to STDOUT).
   -path string
@@ -173,6 +175,8 @@ Usage of ./bin/service-worker-inventoryd:
     	The port number to listen for requests on. (default 8080)
   -root string
     	A valid URL to fetch subrequests from.
+  -scheme string
+    	Valid options are: http, lambda. (default "http")
 ```
 
 For example:
