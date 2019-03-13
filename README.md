@@ -122,6 +122,16 @@ function fromCache(request) {
 }
 ```
 
+## URIs
+
+URIs (to be passed to the `cache.addAll` JavaScript function) are derived from the following HTML elements:
+
+* &lt;img src="{URI}" /&gt;
+* &lt;link rel="stylesheet" href="{URI}" /&gt;
+* &lt;script type="text/javascript" src="{URI}" /&gt;
+* &lt;source srcset="{URI}" /&gt;
+* &lt;source src="{URI}" /&gt;
+
 ## Tools
 
 ### add-service-worker
@@ -230,19 +240,9 @@ function precache() {
 ... omitted for the sake of brevity
 ```
 
-## URIs
-
-URIs (to be passed to the `cache.addAll` JavaScript function) are derived from the following HTML elements:
-
-* &lt;img src="{URI}" /&gt;
-* &lt;link rel="stylesheet" href="{URI}" /&gt;
-* &lt;script type="text/javascript" src="{URI}" /&gt;
-* &lt;source srcset="{URI}" /&gt;
-* &lt;source src="{URI}" /&gt;
-
 ## AWS (Lambda)
 
-Yes, it is possible to run the `service-worker-inventoryd` daemon as Lambda function and accessed via an API Gateway endpoint.
+It is possible to run the `service-worker-inventoryd` daemon as Lambda function and accessed via an API Gateway endpoint.
 
 The first step is to build the Lambda function to upload to AWS. This can be done using the handy `make lambda` Makefile target.
 
