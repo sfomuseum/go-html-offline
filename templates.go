@@ -26,11 +26,23 @@ self.addEventListener('fetch', function(evt) {
 });
 
 function precache() {
-  return caches.open(CACHE).then(function (cache) {
-    return cache.addAll([
+
+  var cache_items = [
 	{{ range  $uri := .ToCache }}'{{ $uri }}',
 	{{ end }}
-    ]);
+  ];
+
+  return caches.open(CACHE).then(function (cache) {
+
+    	// return cache.addAll(cache_items);
+
+	return Promise.all(
+            cache_items.map(function (url) {
+                return cache.add(url).catch(function (reason) {
+                    return console.log(url + "failed: " + String(reason));
+                })
+            })
+        );
   });
 }
 
