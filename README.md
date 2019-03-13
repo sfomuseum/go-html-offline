@@ -152,25 +152,32 @@ If you just want to bulk process one or more folders full of `.html` files you w
 
 ### service-worker-inventoryd
 
+`service-worker-inventoryd` is an HTTP server that will fetch a URL and generate a "network-or-cache" style service worker JavaScript file for the assets listed in that page (URL) using the `offline.AddServiceWorker` method.
+
 ```
 ./bin/service-worker-inventoryd -h
 Usage of ./bin/service-worker-inventoryd:
   -cache-name string
     	The name for your browser/service worker cache. (default "network-or-cache")
+  -cors string
+    	... (default "*")
   -host string
     	The hostname to listen for requests on. (default "localhost")
+  -logging
+    	Log requests (to STDOUT).
+  -path string
+    	The path (URL) for handling requests. (default "/")
   -port int
     	The port number to listen for requests on. (default 8080)
-  -prefix string
-    	A prefix to remove from URLs before fetching subrequests.
   -root string
-    	A valid URL to fetch subrequests from
+    	A valid URL to fetch subrequests from.
 ```
 
 For example:
 
 ```
-$> ./bin/service-worker-inventoryd -prefix "sw/" -root "https://millsfield.sfomuseum.org"
+$> ./bin/service-worker-inventoryd -prefix "/sw" -root "https://millsfield.sfomuseum.org"
+2019/03/13 10:20:12 listening for requests on localhost:8080/sw/
 ```
 
 And then in another terminal:

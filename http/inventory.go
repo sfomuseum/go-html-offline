@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"github.com/sfomuseum/go-html-offline"
 	"io/ioutil"
-	_ "log"
+	"log"
 	gohttp "net/http"
 	gourl "net/url"
 	"strconv"
@@ -13,9 +13,10 @@ import (
 )
 
 type InventoryOptions struct {
-	Root        string
-	CORS        string
-	StripPrefix string
+	Root    string
+	CORS    string
+	Path    string
+	Logging bool
 }
 
 func InventoryHandler(inv_opts *InventoryOptions, sw_opts *offline.ServiceWorkerOptions) (gohttp.Handler, error) {
@@ -33,10 +34,11 @@ func InventoryHandler(inv_opts *InventoryOptions, sw_opts *offline.ServiceWorker
 		url.Scheme = root.Scheme
 		url.Host = root.Host
 
-		if inv_opts.StripPrefix != "" {
+		path := strings.Replace(url.Path, inv_opts.Path, "", 1)
+		url.Path = path
 
-			path := strings.Replace(url.Path, inv_opts.StripPrefix, "", 1)
-			url.Path = path
+		if inv_opts.Logging {
+			log.Printf("Fetch '%s'\n", url)
 		}
 
 		rsp2, err := gohttp.Get(url.String())
