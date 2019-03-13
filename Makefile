@@ -41,6 +41,14 @@ bin: 	rmdeps self
 	@GOPATH=$(shell pwd) go build -o bin/add-service-worker cmd/add-service-worker.go
 	@GOPATH=$(shell pwd) go build -o bin/service-worker-inventoryd cmd/service-worker-inventoryd.go
 
+lambda:
+	@make self
+	if test -f main; then rm -f main; fi
+	if test -f deployment.zip; then rm -f deployment.zip; fi
+	@GOPATH=$(GOPATH) GOOS=linux go build -o main cmd/service-worker-inventoryd.go
+	zip deployment.zip main
+	rm -f main
+
 dist-build:
 	OS=darwin make dist-os
 	OS=windows make dist-os

@@ -4,5 +4,5 @@ src
 !vendor/src
 *.json
 bin
-*.db
+*.zip
 dist
