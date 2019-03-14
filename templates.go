@@ -32,18 +32,25 @@ function precache() {
 	{{ end }}
   ];
 
-  return caches.open(CACHE).then(function (cache) {
-
-    	// return cache.addAll(cache_items);
-
+    return caches.open(CACHE).then(function (cache) {
+	
+    	return cache.addAll(cache_items);
+	
+	/*
 	return Promise.all(
+	    
             cache_items.map(function (url) {
-                return cache.add(url).catch(function (reason) {
+		console.log("add URL ", url);
+		
+                return cache.add(url).catch(function (reason){
                     return console.log(url + "failed: " + String(reason));
-                })
-            })
-        );
-  });
+                });
+                
+            });
+	);
+	*/
+
+    });
 }
 
 function fromNetwork(request, timeout) {
